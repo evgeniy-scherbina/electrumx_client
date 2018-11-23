@@ -16,8 +16,6 @@ func DecodeBlockHeadersResp(resp *BlockHeadersResp) ([]*wire.BlockHeader, error)
 
 	blockHeaders := make([]*wire.BlockHeader, 0)
 	for buff.Len() != 0 {
-		fmt.Println(buff.Len())
-
 		blockHeader := wire.BlockHeader{}
 		if err := blockHeader.Deserialize(buff); err != nil {
 			return nil, err

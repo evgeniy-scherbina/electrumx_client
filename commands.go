@@ -7,13 +7,16 @@ import (
 
 var getBlockHeadersCommand = cli.Command{
 	Name:   "getblockheaders",
+	Usage:  "Return a concatenated chunk of block headers from the main chain.",
 	Action: getBlockHeaders,
 	Flags: []cli.Flag{
 		cli.IntFlag{
 			Name:  "start_height",
+			Usage: "The height of the first header requested, a non-negative integer.",
 		},
 		cli.StringFlag{
-			Name: "count",
+			Name:  "count",
+			Usage: "The number of headers requested, a non-negative integer.",
 		},
 		cli.BoolFlag{
 			Name: "verbose",
@@ -25,6 +28,10 @@ func getBlockHeaders(ctx *cli.Context) error {
 	startHeight := ctx.Int("start_height")
 	count := ctx.Int("count")
 	verbose := ctx.Bool("verbose")
+
+	if startHeight == 0 || count == 0 {
+		return fmt.Errorf("both `start_height` and `count` flags must be set")
+	}
 
 	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
 	if err := client.Dial(); err != nil {
