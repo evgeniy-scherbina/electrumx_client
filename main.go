@@ -16,6 +16,7 @@ func main() {
 	app.Name = "electrumx_client"
 
 	app.Commands = []cli.Command{
+		getBlockHeaderCommand,
 		getBlockHeadersCommand,
 	}
 

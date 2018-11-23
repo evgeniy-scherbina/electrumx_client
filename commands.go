@@ -5,6 +5,48 @@ import (
 	"github.com/urfave/cli"
 )
 
+var getBlockHeaderCommand = cli.Command{
+	Name:   "getblockheader",
+	Usage:  "Return the block header at the given height.",
+	Action: getBlockHeader,
+	Flags: []cli.Flag{
+		cli.IntFlag{
+			Name:  "height",
+		},
+		cli.BoolFlag{
+			Name: "verbose",
+		},
+	},
+}
+
+func getBlockHeader(ctx *cli.Context) error {
+	height := ctx.Int("height")
+	verbose := ctx.Bool("verbose")
+
+	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
+	if err := client.Dial(); err != nil {
+		return err
+	}
+
+	resp, err := client.GetBlockHeader(height)
+	if err != nil {
+		return err
+	}
+
+	if !verbose {
+		fmt.Println(resp)
+		return nil
+	}
+
+	bh, err := DecodeBlockHeaderResp(resp)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(BlockHeaderDescription(bh))
+	return nil
+}
+
 var getBlockHeadersCommand = cli.Command{
 	Name:   "getblockheaders",
 	Usage:  "Return a concatenated chunk of block headers from the main chain.",
