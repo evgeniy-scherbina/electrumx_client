@@ -23,9 +23,16 @@ func (resp *BlockHeadersResp) String() string {
 }
 
 type BlockHeadersResult struct {
-	Count int    `json:"count"`
-	Hex   string `json:"hex"`
-	Max   int    `json:"max"`
+	// The number of headers returned, between zero and the number requested. If
+	// the chain has not extended sufficiently far, only the available headers will be
+	// returned. If more headers than max were requested at most max will be returned.
+	Count int `json:"count"`
+
+	// The binary block headers concatenated together in-order as a hexadecimal string.
+	Hex string `json:"hex"`
+
+	// The maximum number of headers the server will return in a single request.
+	Max int `json:"max"`
 }
 
 func (client *ElectrumxClient) GetBlockHeaders(startHeight int, count int) (*BlockHeadersResp, error) {
