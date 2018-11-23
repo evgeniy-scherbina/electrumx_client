@@ -35,6 +35,9 @@ type BlockHeadersResult struct {
 	Max int `json:"max"`
 }
 
+// Return a concatenated chunk of block headers from the main chain.
+// * start_height - the height of the first header requested, a non-negative integer.
+// * count - the number of headers requested, a non-negative integer.
 func (client *ElectrumxClient) GetBlockHeaders(startHeight int, count int) (*BlockHeadersResp, error) {
 	if err := client.call2(0, "blockchain.block.headers", startHeight, count); err != nil {
 		return nil, err
