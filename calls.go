@@ -133,15 +133,37 @@ func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error)
 	return &rez, nil
 }
 
-func (client *ElectrumxClient) RelayFee() (string, error) {
+type RelayFeeResp struct {
+	ID      int     `json:"id"`
+	Jsonrpc string  `json:"jsonrpc"`
+	Result  float64 `json:"result"`
+}
+
+func (resp *RelayFeeResp) String() string {
+	tmpl := `
+	ID:      %v
+	Jsonrpc: %v
+	Result:  %v
+	`
+	return fmt.Sprintf(tmpl, resp.ID, resp.Jsonrpc, resp.Result)
+}
+
+// Return the minimum fee a low-priority transaction must pay in order to be accepted
+// to the daemon’s memory pool.
+func (client *ElectrumxClient) RelayFee() (*RelayFeeResp, error) {
 	if err := client.call0(0, "blockchain.relayfee"); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	resp, err := client.recv()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(resp), nil
+	rez := RelayFeeResp{}
+	if err := json.Unmarshal(resp, &rez); err != nil {
+		return nil, err
+	}
+
+	return &rez, nil
 }

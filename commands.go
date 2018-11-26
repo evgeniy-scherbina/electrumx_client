@@ -139,6 +139,8 @@ func estimateFee(ctx *cli.Context) error {
 
 var relayFeeCommand = cli.Command{
 	Name: "relayfee",
+	Usage: "Return the minimum fee a low-priority transaction must pay in order to be accepted" +
+		"to the daemon’s memory pool.",
 	Action: relayFee,
 }
 
