@@ -136,6 +136,8 @@ func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error)
 type RelayFeeResp struct {
 	ID      int     `json:"id"`
 	Jsonrpc string  `json:"jsonrpc"`
+
+	// The fee in whole coin units (BTC, not satoshis for Bitcoin) as a floating point number.
 	Result  float64 `json:"result"`
 }
 
