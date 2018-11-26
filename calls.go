@@ -229,6 +229,20 @@ type ScriptHashGetHistoryResp struct {
 	Result  []*ScriptHashGetHistoryResult `json:"result"`
 }
 
+func (resp *ScriptHashGetHistoryResp) String() string {
+	result := "\n"
+	for _, item := range resp.Result {
+		result += fmt.Sprintln(item)
+	}
+
+	tmpl := `
+	ID:      %v
+	Jsonrpc: %v
+	Result:  %v
+	`
+	return fmt.Sprintf(tmpl, resp.ID, resp.Jsonrpc, result)
+}
+
 func (client *ElectrumxClient) ScriptHashGetHistory(scriptHash []byte) (*ScriptHashGetHistoryResp, error) {
 	if err := client.call1(0, "blockchain.scripthash.get_history", wrap(hex.EncodeToString(scriptHash))); err != nil {
 		return nil, err
