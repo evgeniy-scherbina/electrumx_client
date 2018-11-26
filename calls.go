@@ -135,11 +135,11 @@ func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error)
 }
 
 type RelayFeeResp struct {
-	ID      int     `json:"id"`
-	Jsonrpc string  `json:"jsonrpc"`
+	ID      int    `json:"id"`
+	Jsonrpc string `json:"jsonrpc"`
 
 	// The fee in whole coin units (BTC, not satoshis for Bitcoin) as a floating point number.
-	Result  float64 `json:"result"`
+	Result float64 `json:"result"`
 }
 
 func (resp *RelayFeeResp) String() string {
@@ -171,19 +171,45 @@ func (client *ElectrumxClient) RelayFee() (*RelayFeeResp, error) {
 	return &rez, nil
 }
 
+type ScriptHashGetBalanceResult struct {
+	Confirmed   int `json:"confirmed"`
+	Unconfirmed int `json:"unconfirmed"`
+}
+
+type ScriptHashGetBalanceResp struct {
+	ID      int                        `json:"id"`
+	Jsonrpc string                     `json:"jsonrpc"`
+	Result  ScriptHashGetBalanceResult `json:"result"`
+}
+
+func (resp *ScriptHashGetBalanceResp) String() string {
+	tmpl := `
+	ID:          %v
+	Jsonrpc:     %v
+	Confirmed:   %v
+	Unconfirmed: %v
+	`
+	return fmt.Sprintf(tmpl, resp.ID, resp.Jsonrpc, resp.Result.Confirmed, resp.Result.Unconfirmed)
+}
+
 // Return the confirmed and unconfirmed balances of a script hash.
 // * scriptHash - the script hash as a hexadecimal string.
-func (client *ElectrumxClient) ScriptHashGetBalance(scriptHash []byte) (string, error) {
+func (client *ElectrumxClient) ScriptHashGetBalance(scriptHash []byte) (*ScriptHashGetBalanceResp, error) {
 	if err := client.call1(0, "blockchain.scripthash.get_balance", wrap(hex.EncodeToString(scriptHash))); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	resp, err := client.recv()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(resp), nil
+	rez := ScriptHashGetBalanceResp{}
+	if err := json.Unmarshal(resp, &rez); err != nil {
+		return nil, err
+	}
+
+	return &rez, nil
 }
 
 func wrap(val string) string {
