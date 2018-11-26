@@ -44,6 +44,9 @@ func (client *ElectrumxClient) call1(id int, method string, params ...interface{
 	tmpl := `{"id":%v, "method": "%v", "params": [%v]}` + "\n"
 	allParams := append([]interface{}{id, method}, params...)
 	raw := fmt.Sprintf(tmpl, allParams...)
+
+	fmt.Println(raw)
+
 	_, err := client.conn.Write([]byte(raw))
 	return err
 }

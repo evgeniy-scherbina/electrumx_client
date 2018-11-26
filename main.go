@@ -21,6 +21,7 @@ func main() {
 		estimateFeeCommand,
 		relayFeeCommand,
 		decodeAddressCommand,
+		scriptHashGetBalanceCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 )
@@ -168,4 +169,21 @@ func (client *ElectrumxClient) RelayFee() (*RelayFeeResp, error) {
 	}
 
 	return &rez, nil
+}
+
+func (client *ElectrumxClient) ScriptHashGetBalance(scriptHash []byte) (string, error) {
+	if err := client.call1(0, "blockchain.scripthash.get_balance", wrap(hex.EncodeToString(scriptHash))); err != nil {
+		return "", err
+	}
+
+	resp, err := client.recv()
+	if err != nil {
+		return "", err
+	}
+
+	return string(resp), nil
+}
+
+func wrap(val string) string {
+	return fmt.Sprintf(`"%v"`, val)
 }

@@ -212,3 +212,36 @@ func decodeAddressHelper(encodedAddress string, params *chaincfg.Params) ([]byte
 	reversed := reverse(scriptHash[:])
 	return reversed, nil
 }
+
+// ScriptHashGetBalance
+var scriptHashGetBalanceCommand = cli.Command{
+	Name: "scripthashgetbalance",
+	Action: scriptHashGetBalance,
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name: "address",
+		},
+	},
+}
+
+func scriptHashGetBalance(ctx *cli.Context) error {
+	encodedAddress := ctx.String("address")
+
+	reversed, err := decodeAddressHelper(encodedAddress, &chaincfg.MainNetParams)
+	if err != nil {
+		return err
+	}
+
+	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
+	if err := client.Dial(); err != nil {
+		return err
+	}
+
+	resp, err := client.ScriptHashGetBalance(reversed)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(resp)
+	return nil
+}
