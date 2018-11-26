@@ -1,7 +1,12 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/txscript"
+	"github.com/btcsuite/btcutil"
 	"github.com/urfave/cli"
 )
 
@@ -156,5 +161,46 @@ func relayFee(ctx *cli.Context) error {
 	}
 
 	fmt.Println(resp)
+	return nil
+}
+
+var decodeAddressCommand = cli.Command{
+	Name: "decodeaddress",
+	Usage: "see details https://electrumx.readthedocs.io/en/latest/protocol-basics.html#script-hashes",
+	Action: decodeAddress,
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name:  "address",
+		},
+	},
+}
+
+func decodeAddress(ctx *cli.Context) error {
+	encodedAddress := ctx.String("address")
+
+	address, err := btcutil.DecodeAddress(encodedAddress, &chaincfg.MainNetParams)
+	if err != nil {
+		return err
+	}
+
+	script, err := txscript.PayToAddrScript(address)
+	if err != nil {
+		return err
+	}
+
+	scriptHash := sha256.Sum256(script)
+	if err != nil {
+		return err
+	}
+
+	reverse := func(arr []byte) []byte {
+		for i := 0; i < len(arr) / 2; i++ {
+			arr[i], arr[len(arr)-1-i] = arr[len(arr)-1-i], arr[i]
+		}
+		return arr
+	}
+	reversed := reverse(scriptHash[:])
+
+	fmt.Println(hex.EncodeToString(reversed))
 	return nil
 }
