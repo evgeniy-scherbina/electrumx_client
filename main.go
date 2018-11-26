@@ -19,6 +19,7 @@ func main() {
 		getBlockHeaderCommand,
 		getBlockHeadersCommand,
 		estimateFeeCommand,
+		relayFeeCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {

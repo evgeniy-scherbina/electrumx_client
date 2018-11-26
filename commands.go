@@ -136,3 +136,23 @@ func estimateFee(ctx *cli.Context) error {
 	fmt.Println(resp)
 	return nil
 }
+
+var relayFeeCommand = cli.Command{
+	Name: "relayfee",
+	Action: relayFee,
+}
+
+func relayFee(ctx *cli.Context) error {
+	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
+	if err := client.Dial(); err != nil {
+		return err
+	}
+
+	resp, err := client.RelayFee()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(resp)
+	return nil
+}

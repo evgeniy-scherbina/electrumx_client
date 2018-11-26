@@ -33,6 +33,13 @@ func (client *ElectrumxClient) Dial() error {
 	return nil
 }
 
+func (client *ElectrumxClient) call0(id int, method string) error {
+	tmpl := `{"id":%v, "method": "%v", "params": []}` + "\n"
+	raw := fmt.Sprintf(tmpl, id, method)
+	_, err := client.conn.Write([]byte(raw))
+	return err
+}
+
 func (client *ElectrumxClient) call1(id int, method string, params ...interface{}) error {
 	tmpl := `{"id":%v, "method": "%v", "params": [%v]}` + "\n"
 	allParams := append([]interface{}{id, method}, params...)

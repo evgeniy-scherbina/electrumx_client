@@ -132,3 +132,16 @@ func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error)
 
 	return &rez, nil
 }
+
+func (client *ElectrumxClient) RelayFee() (string, error) {
+	if err := client.call0(0, "blockchain.relayfee"); err != nil {
+		return "", err
+	}
+
+	resp, err := client.recv()
+	if err != nil {
+		return "", err
+	}
+
+	return string(resp), nil
+}
