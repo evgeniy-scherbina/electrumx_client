@@ -218,17 +218,33 @@ func wrap(val string) string {
 	return fmt.Sprintf(`"%v"`, val)
 }
 
-func (client *ElectrumxClient) ScriptHashGetHistory(scriptHash []byte) (string, error) {
+type ScriptHashGetHistoryResult struct {
+	Height int    `json:"height"`
+	TxHash string `json:"tx_hash"`
+}
+
+type ScriptHashGetHistoryResp struct {
+	ID      int                           `json:"id"`
+	Jsonrpc string                        `json:"jsonrpc"`
+	Result  []*ScriptHashGetHistoryResult `json:"result"`
+}
+
+func (client *ElectrumxClient) ScriptHashGetHistory(scriptHash []byte) (*ScriptHashGetHistoryResp, error) {
 	if err := client.call1(0, "blockchain.scripthash.get_history", wrap(hex.EncodeToString(scriptHash))); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	resp, err := client.recv()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return string(resp), nil
+	rez := ScriptHashGetHistoryResp{}
+	if err := json.Unmarshal(resp, &rez); err != nil {
+		return nil, err
+	}
+
+	return &rez, nil
 }
 
 // NOT SUPPORT ??
