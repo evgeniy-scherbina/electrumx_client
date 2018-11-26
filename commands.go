@@ -24,6 +24,10 @@ func getBlockHeader(ctx *cli.Context) error {
 	height := ctx.Int("height")
 	verbose := ctx.Bool("verbose")
 
+	if height == 0 {
+		return fmt.Errorf("`height` flag must be set")
+	}
+
 	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
 	if err := client.Dial(); err != nil {
 		return err
