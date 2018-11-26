@@ -103,3 +103,33 @@ func getBlockHeaders(ctx *cli.Context) error {
 	fmt.Println(BlockHeadersDescription(bh))
 	return nil
 }
+
+var estimateFeeCommand = cli.Command{
+	Name:   "estimatefee",
+	Action: estimateFee,
+	Flags: []cli.Flag{
+		cli.IntFlag{
+			Name: "number",
+		},
+	},
+}
+
+func estimateFee(ctx *cli.Context) error {
+	number := ctx.Int("number")
+	if !ctx.IsSet("number") {
+		return fmt.Errorf("`number` flag must be set")
+	}
+
+	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
+	if err := client.Dial(); err != nil {
+		return err
+	}
+
+	resp, err := client.EstimateFee(number)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(resp)
+	return nil
+}

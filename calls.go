@@ -10,7 +10,7 @@ type BlockHeaderResp struct {
 	Jsonrpc string `json:"jsonrpc"`
 
 	// The raw block header as a hexadecimal string.
-	Result  string `json:"result"`
+	Result string `json:"result"`
 }
 
 func (resp *BlockHeaderResp) String() string {
@@ -86,6 +86,39 @@ func (client *ElectrumxClient) GetBlockHeaders(startHeight int, count int) (*Blo
 	}
 
 	rez := BlockHeadersResp{}
+	if err := json.Unmarshal(resp, &rez); err != nil {
+		return nil, err
+	}
+
+	return &rez, nil
+}
+
+type EstimateFeeResp struct {
+	ID      int     `json:"id"`
+	Jsonrpc string  `json:"jsonrpc"`
+	Result  float64 `json:"result"`
+}
+
+func (resp *EstimateFeeResp) String() string {
+	tmpl := `
+	ID:      %v
+	Jsonrpc: %v
+	Result:  %v
+	`
+	return fmt.Sprintf(tmpl, resp.ID, resp.Jsonrpc, resp.Result)
+}
+
+func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error) {
+	if err := client.call1(0, "blockchain.estimatefee", number); err != nil {
+		return nil, err
+	}
+
+	resp, err := client.recv()
+	if err != nil {
+		return nil, err
+	}
+
+	rez := EstimateFeeResp{}
 	if err := json.Unmarshal(resp, &rez); err != nil {
 		return nil, err
 	}
