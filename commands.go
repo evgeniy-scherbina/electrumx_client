@@ -105,11 +105,14 @@ func getBlockHeaders(ctx *cli.Context) error {
 }
 
 var estimateFeeCommand = cli.Command{
-	Name:   "estimatefee",
+	Name: "estimatefee",
+	Usage: "Return the estimated transaction fee per kilobyte for a transaction to be confirmed" +
+		"within a certain number of blocks.",
 	Action: estimateFee,
 	Flags: []cli.Flag{
 		cli.IntFlag{
-			Name: "number",
+			Name:  "number",
+			Usage: "The number of blocks to target for confirmation.",
 		},
 	},
 }

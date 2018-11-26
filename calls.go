@@ -94,9 +94,13 @@ func (client *ElectrumxClient) GetBlockHeaders(startHeight int, count int) (*Blo
 }
 
 type EstimateFeeResp struct {
-	ID      int     `json:"id"`
-	Jsonrpc string  `json:"jsonrpc"`
-	Result  float64 `json:"result"`
+	ID      int    `json:"id"`
+	Jsonrpc string `json:"jsonrpc"`
+
+	// The estimated transaction fee in coin units per kilobyte, as a floating point number.
+	// If the daemon does not have enough information to make an estimate, the integer
+	// -1 is returned.
+	Result float64 `json:"result"`
 }
 
 func (resp *EstimateFeeResp) String() string {
@@ -108,6 +112,9 @@ func (resp *EstimateFeeResp) String() string {
 	return fmt.Sprintf(tmpl, resp.ID, resp.Jsonrpc, resp.Result)
 }
 
+// Return the estimated transaction fee per kilobyte for a transaction to be confirmed
+// within a certain number of blocks.
+// * number - the number of blocks to target for confirmation.
 func (client *ElectrumxClient) EstimateFee(number int) (*EstimateFeeResp, error) {
 	if err := client.call1(0, "blockchain.estimatefee", number); err != nil {
 		return nil, err
