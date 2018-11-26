@@ -165,12 +165,12 @@ func relayFee(ctx *cli.Context) error {
 }
 
 var decodeAddressCommand = cli.Command{
-	Name: "decodeaddress",
-	Usage: "see details https://electrumx.readthedocs.io/en/latest/protocol-basics.html#script-hashes",
+	Name:   "decodeaddress",
+	Usage:  "see details https://electrumx.readthedocs.io/en/latest/protocol-basics.html#script-hashes",
 	Action: decodeAddress,
 	Flags: []cli.Flag{
 		cli.StringFlag{
-			Name:  "address",
+			Name: "address",
 		},
 	},
 }
@@ -204,7 +204,7 @@ func decodeAddressHelper(encodedAddress string, params *chaincfg.Params) ([]byte
 	}
 
 	reverse := func(arr []byte) []byte {
-		for i := 0; i < len(arr) / 2; i++ {
+		for i := 0; i < len(arr)/2; i++ {
 			arr[i], arr[len(arr)-1-i] = arr[len(arr)-1-i], arr[i]
 		}
 		return arr
@@ -213,13 +213,14 @@ func decodeAddressHelper(encodedAddress string, params *chaincfg.Params) ([]byte
 	return reversed, nil
 }
 
-// ScriptHashGetBalance
 var scriptHashGetBalanceCommand = cli.Command{
-	Name: "scripthashgetbalance",
+	Name:   "scripthashgetbalance",
+	Usage:  "Return the confirmed and unconfirmed balances of a script hash.",
 	Action: scriptHashGetBalance,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name: "address",
+			Usage: "The script hash as a hexadecimal string.",
 		},
 	},
 }

@@ -171,6 +171,8 @@ func (client *ElectrumxClient) RelayFee() (*RelayFeeResp, error) {
 	return &rez, nil
 }
 
+// Return the confirmed and unconfirmed balances of a script hash.
+// * scriptHash - the script hash as a hexadecimal string.
 func (client *ElectrumxClient) ScriptHashGetBalance(scriptHash []byte) (string, error) {
 	if err := client.call1(0, "blockchain.scripthash.get_balance", wrap(hex.EncodeToString(scriptHash))); err != nil {
 		return "", err
