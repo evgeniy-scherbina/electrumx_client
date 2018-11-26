@@ -22,6 +22,7 @@ func main() {
 		relayFeeCommand,
 		decodeAddressCommand,
 		scriptHashGetBalanceCommand,
+		scriptHashGetMempoolCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {
