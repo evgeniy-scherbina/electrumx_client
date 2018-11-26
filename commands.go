@@ -12,6 +12,7 @@ var getBlockHeaderCommand = cli.Command{
 	Flags: []cli.Flag{
 		cli.IntFlag{
 			Name:  "height",
+			Usage: "The height of the block, a non-negative integer.",
 		},
 		cli.BoolFlag{
 			Name: "verbose",
