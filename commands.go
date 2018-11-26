@@ -178,19 +178,29 @@ var decodeAddressCommand = cli.Command{
 func decodeAddress(ctx *cli.Context) error {
 	encodedAddress := ctx.String("address")
 
-	address, err := btcutil.DecodeAddress(encodedAddress, &chaincfg.MainNetParams)
+	reversed, err := decodeAddressHelper(encodedAddress, &chaincfg.MainNetParams)
 	if err != nil {
 		return err
+	}
+
+	fmt.Println(hex.EncodeToString(reversed))
+	return nil
+}
+
+func decodeAddressHelper(encodedAddress string, params *chaincfg.Params) ([]byte, error) {
+	address, err := btcutil.DecodeAddress(encodedAddress, params)
+	if err != nil {
+		return nil, err
 	}
 
 	script, err := txscript.PayToAddrScript(address)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	scriptHash := sha256.Sum256(script)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	reverse := func(arr []byte) []byte {
@@ -200,7 +210,5 @@ func decodeAddress(ctx *cli.Context) error {
 		return arr
 	}
 	reversed := reverse(scriptHash[:])
-
-	fmt.Println(hex.EncodeToString(reversed))
-	return nil
+	return reversed, nil
 }
