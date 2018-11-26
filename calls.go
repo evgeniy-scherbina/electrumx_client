@@ -171,6 +171,8 @@ func (client *ElectrumxClient) RelayFee() (*RelayFeeResp, error) {
 	return &rez, nil
 }
 
+// A dictionary with keys confirmed and unconfirmed. The value of each is the
+// appropriate balance in coin units as a string.
 type ScriptHashGetBalanceResult struct {
 	Confirmed   int `json:"confirmed"`
 	Unconfirmed int `json:"unconfirmed"`
