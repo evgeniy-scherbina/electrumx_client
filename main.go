@@ -22,6 +22,7 @@ func main() {
 		relayFeeCommand,
 		decodeAddressCommand,
 		scriptHashGetBalanceCommand,
+		scriptHashGetHistoryCommand,
 		scriptHashGetMempoolCommand,
 	}
 

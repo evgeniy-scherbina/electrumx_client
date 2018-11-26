@@ -218,6 +218,19 @@ func wrap(val string) string {
 	return fmt.Sprintf(`"%v"`, val)
 }
 
+func (client *ElectrumxClient) ScriptHashGetHistory(scriptHash []byte) (string, error) {
+	if err := client.call1(0, "blockchain.scripthash.get_history", wrap(hex.EncodeToString(scriptHash))); err != nil {
+		return "", err
+	}
+
+	resp, err := client.recv()
+	if err != nil {
+		return "", err
+	}
+
+	return string(resp), nil
+}
+
 // NOT SUPPORT ??
 func (client *ElectrumxClient) ScriptHashGetMempool(scriptHash []byte) (string, error) {
 	if err := client.call1(0, "blockchain.scripthash.get_mempool", wrap(hex.EncodeToString(scriptHash))); err != nil {

@@ -247,6 +247,39 @@ func scriptHashGetBalance(ctx *cli.Context) error {
 	return nil
 }
 
+var scriptHashGetHistoryCommand = cli.Command{
+	Name: "scripthashgethistory",
+	Action: scriptHashGetHistory,
+	Flags: []cli.Flag{
+		cli.StringFlag{
+			Name: "address",
+			Usage: "The script hash as a hexadecimal string.",
+		},
+	},
+}
+
+func scriptHashGetHistory(ctx *cli.Context) error {
+	encodedAddress := ctx.String("address")
+
+	reversed, err := decodeAddressHelper(encodedAddress, &chaincfg.MainNetParams)
+	if err != nil {
+		return err
+	}
+
+	client := NewElectrumxClient(defaultElectrumxServerHost, defaultElectrumxServerPort)
+	if err := client.Dial(); err != nil {
+		return err
+	}
+
+	resp, err := client.ScriptHashGetHistory(reversed)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(resp)
+	return nil
+}
+
 var scriptHashGetMempoolCommand = cli.Command{
 	Name: "scripthashgetmempool",
 	Action: scriptHashGetMempool,
